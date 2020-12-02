@@ -3,8 +3,8 @@ This year i'm doing advent of code in Rust, it's a new language for me. I've sta
 
 ## Stuff i've learned
 - `cargo new projectname` makes a new project
-- `Cargo.toml` is the `package.json` of rust (https://www.jetbrains.com/rust/)
-- IntelliJ has a free plugin for rust, that will install upon opening the project directory
+- `Cargo.toml` is the `package.json` of rust 
+- IntelliJ has a free plugin for rust, that will install upon opening the project directory (https://www.jetbrains.com/rust/)
 - You can enable rustfmt (search in settings) on save to format your code automatically
 
 ## Running
