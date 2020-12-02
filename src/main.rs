@@ -2,6 +2,7 @@ use std::{env, io};
 
 pub mod aoc_utils;
 pub mod day01;
+pub mod day02;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -26,6 +27,7 @@ fn main() {
 
     match day {
         1 => day01::run(),
+        2 => day02::run(),
         _ => println!("Unkown day {}", day),
     }
 }
