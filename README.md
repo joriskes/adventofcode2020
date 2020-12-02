@@ -8,5 +8,5 @@ This year i'm doing advent of code in Rust, it's a new language for me. I've sta
 - You can enable rustfmt (search in settings) on save to format your code automatically
 
 ## Running
-- Use `cargo run 1` to run day 1, or if no day is suplied it will ask for a day
+- Use triple shift `run cargo command` -> `cargo run 1` to run day 1, or if no day is suplied it will ask for a day
  

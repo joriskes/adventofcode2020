@@ -1,5 +1,6 @@
 use std::{env, io};
 
+pub mod aoc_utils;
 pub mod day01;
 
 fn main() {
