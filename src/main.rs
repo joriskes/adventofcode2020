@@ -1,4 +1,5 @@
-use std::{env, io};
+use crate::aoc_utils::download_input;
+use std::{env, fs, io};
 
 pub mod aoc_utils;
 pub mod day01;
@@ -23,11 +24,18 @@ fn main() {
         .parse()
         .expect("Day input needs to be a number");
 
-    println!("Running day {}", day);
+    let formatted_filename = format!("input/day{:02}.txt", day);
+    let input_filename = formatted_filename.as_str();
 
+    if !fs::metadata(input_filename).is_ok() {
+        download_input(input_filename, day);
+        println!("Day {} input download to {} done", day, input_filename);
+    }
+
+    println!("Running day {}", day);
     match day {
-        1 => day01::run(),
-        2 => day02::run(),
+        1 => day01::run(input_filename),
+        2 => day02::run(input_filename),
         _ => println!("Unkown day {}", day),
     }
 }

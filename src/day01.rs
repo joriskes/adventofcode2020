@@ -1,7 +1,7 @@
 use crate::aoc_utils::read_input;
 
-pub fn run() {
-    let input = read_input("input/day01.txt");
+pub fn run(input_filename: &str) {
+    let input = read_input(input_filename);
 
     part1(&input);
     part2(&input);

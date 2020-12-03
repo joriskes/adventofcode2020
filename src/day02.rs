@@ -1,8 +1,8 @@
 use crate::aoc_utils::read_input;
 use regex::Regex;
 
-pub fn run() {
-    let input = read_input("input/day02.txt");
+pub fn run(input_filename: &str) {
+    let input = read_input(input_filename);
 
     part1(&input);
     part2(&input);
