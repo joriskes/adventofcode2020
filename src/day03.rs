@@ -11,7 +11,7 @@ pub fn run(input_filename: &str) {
 
 const TREE: char = '#';
 
-fn count_trees_on_slope(mapped: &Vec<Vec<char>>, step_x: usize, step_y: usize) -> u32 {
+fn count_trees_on_slope(mapped: &Vec<Vec<char>>, step_x: usize, step_y: usize) -> u128 {
     let mut start_x = 0;
     let mut start_y = 0;
     let mut tree_count = 0;
@@ -38,13 +38,9 @@ fn part1(mapped: &Vec<Vec<char>>) {
 const TO_CHECK: [(usize, usize); 5] = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
 
 fn part2(mapped: &Vec<Vec<char>>) {
-    let mut tree_count: u128 = 0;
+    let mut tree_count: u128 = 1; // Since we're multiplying we start on one
     TO_CHECK.iter().for_each(|(step_x, step_y)| {
-        if tree_count == 0 {
-            tree_count = count_trees_on_slope(&mapped, *step_x, *step_y) as u128;
-        } else {
-            tree_count *= count_trees_on_slope(&mapped, *step_x, *step_y) as u128;
-        }
+        tree_count *= count_trees_on_slope(&mapped, *step_x, *step_y);
     });
     println!("Part2: {}", tree_count)
 }
