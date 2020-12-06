@@ -9,7 +9,7 @@ pub fn run(input_filename: &str) {
 }
 
 fn input_to_forms(input: &String) -> Vec<String> {
-    // Merge passports into single strings
+    // Merge form groups into single strings
     let mut res: Vec<String> = vec![];
     let mut index: usize = 0;
     res.push(String::from(""));
