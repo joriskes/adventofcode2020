@@ -45,6 +45,7 @@ fn part2(input: &String) {
     let forms = input_to_forms(input);
     let mut total_count = 0;
     for form in forms {
+        // Set individual char counts into a hashmap
         let groups: Vec<&str> = form.split(" ").collect();
         let mut char_list = HashMap::new();
         for group in groups.iter() {
@@ -56,13 +57,12 @@ fn part2(input: &String) {
                 }
             }
         }
-        let mut group_count = 0;
+        // Test the char counts in the hasmap for the group length
         for (_char, count) in char_list.iter() {
             if *count == groups.len() {
-                group_count += 1;
+                total_count += 1;
             }
         }
-        total_count += group_count;
     }
     println!("Part 2: {}", total_count);
 }
