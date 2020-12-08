@@ -53,8 +53,6 @@ fn count_bags(bags: &Vec<Bag>, needle: &str, provided_counted_bags: &Vec<String>
 
     for bag in bags {
         if bag.color == needle {
-            println!("Found {}", needle);
-            println!("Search for {}", &bag.color);
             if !counted_bags.contains(&bag.parent_color) {
                 let col = &bag.parent_color;
                 counted_bags.push(String::from(col));
@@ -71,11 +69,28 @@ fn part1(input: &String) {
     for line in input.lines() {
         bags.extend(read_bag(line));
     }
-    // 238 too high
-    println!("Bags: {:?}", bags);
     let counted: Vec<String> = vec![];
     let counted_bags = count_bags(&bags, "shiny gold", &counted);
     println!("Part 1: {}", counted_bags.len());
 }
 
-fn part2(_input: &String) {}
+fn count_inside(bags: &Vec<Bag>, needle: &str) -> u32 {
+    let mut count: u32 = 0;
+    for bag in bags {
+        if bag.parent_color == needle {
+            count += &bag.number * count_inside(&bags, &bag.color);
+            count += &bag.number;
+        }
+    }
+    return count;
+}
+
+fn part2(input: &String) {
+    let mut bags: Vec<Bag> = vec![];
+
+    for line in input.lines() {
+        bags.extend(read_bag(line));
+    }
+    let count = count_inside(&bags, "shiny gold");
+    println!("Part 2: {}", count);
+}
