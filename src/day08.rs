@@ -3,11 +3,18 @@ use crate::aoc_utils::read_input;
 pub fn run(input_filename: &str) {
     let input = read_input(input_filename);
 
-    part1(&input);
-    part2(&input);
+    let mut line_number: i32 = 0;
+    let mut instructions: Vec<Instruction> = vec![];
+    for line_str in input.lines() {
+        instructions.push(read_operation(line_number, line_str));
+        line_number += 1;
+    }
+
+    part1(&instructions);
+    part2(&instructions);
 }
 
-#[derive(Debug)] // Added so you can debug print this enum
+#[derive(Debug, PartialEq)] // Added so you can debug print this enum
 enum OperationType {
     Nop,
     Acc,
@@ -59,7 +66,7 @@ fn read_operation(line_number: i32, line: &str) -> Instruction {
     };
 }
 
-fn run_program(instructions: Vec<Instruction>) -> (i32, i32) {
+fn run_program(instructions: &Vec<Instruction>) -> (i32, i32) {
     let mut acc: i32 = 0;
     let mut line: i32 = 0;
     let mut executed: Vec<i32> = vec![];
@@ -79,8 +86,7 @@ fn run_program(instructions: Vec<Instruction>) -> (i32, i32) {
             }
         }
 
-        if line < 0 || line > instructions.len() as i32 {
-            println!("Line number went outside of program");
+        if line < 0 || line >= instructions.len() as i32 {
             break;
         }
 
@@ -91,16 +97,52 @@ fn run_program(instructions: Vec<Instruction>) -> (i32, i32) {
     return (acc, line);
 }
 
-fn part1(input: &String) {
-    let mut line_number: i32 = 0;
-    let mut instructions: Vec<Instruction> = vec![];
-    for line_str in input.lines() {
-        instructions.push(read_operation(line_number, line_str));
-        line_number += 1;
-    }
-
+fn part1(instructions: &Vec<Instruction>) {
     let (acc, _last_line) = run_program(instructions);
     println!("Part 1: {}", acc);
 }
 
-fn part2(_input: &String) {}
+fn part2(instructions: &Vec<Instruction>) {
+    let mut skip_index = 0;
+    loop {
+        let mut amended_instructions: Vec<Instruction> = vec![];
+        for (index, instruction) in instructions.iter().enumerate() {
+            if skip_index == index {
+                amended_instructions.push(Instruction {
+                    operation: {
+                        match instruction.operation {
+                            OperationType::Nop => OperationType::Jmp,
+                            OperationType::Acc => OperationType::Acc,
+                            OperationType::Jmp => OperationType::Nop,
+                        }
+                    },
+                    number: instruction.number,
+                    line: instruction.line,
+                });
+            } else {
+                amended_instructions.push(Instruction {
+                    operation: {
+                        match instruction.operation {
+                            OperationType::Nop => OperationType::Nop,
+                            OperationType::Acc => OperationType::Acc,
+                            OperationType::Jmp => OperationType::Jmp,
+                        }
+                    },
+                    number: instruction.number,
+                    line: instruction.line,
+                });
+            }
+        }
+
+        let (acc, last_line) = run_program(&amended_instructions);
+        if last_line >= instructions.len() as i32 {
+            println!("Part 2: {}", acc);
+            break;
+        }
+        skip_index += 1;
+        if skip_index >= instructions.len() as i32 as usize {
+            println!("No solution found?");
+            break;
+        }
+    }
+}
