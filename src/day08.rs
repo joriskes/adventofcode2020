@@ -59,15 +59,8 @@ fn read_operation(line_number: i32, line: &str) -> Instruction {
     };
 }
 
-fn part1(input: &String) {
-    let mut line_number: i32 = 0;
-    let mut instructions: Vec<Instruction> = vec![];
-    for line_str in input.lines() {
-        instructions.push(read_operation(line_number, line_str));
-        line_number += 1;
-    }
-
-    let mut acc = 0;
+fn run_program(instructions: Vec<Instruction>) -> (i32, i32) {
+    let mut acc: i32 = 0;
     let mut line: i32 = 0;
     let mut executed: Vec<i32> = vec![];
     loop {
@@ -92,10 +85,22 @@ fn part1(input: &String) {
         }
 
         if executed.contains(&line) {
-            println!("Part 1: {}", acc);
             break;
         }
     }
+    return (acc, line);
+}
+
+fn part1(input: &String) {
+    let mut line_number: i32 = 0;
+    let mut instructions: Vec<Instruction> = vec![];
+    for line_str in input.lines() {
+        instructions.push(read_operation(line_number, line_str));
+        line_number += 1;
+    }
+
+    let (acc, _last_line) = run_program(instructions);
+    println!("Part 1: {}", acc);
 }
 
 fn part2(_input: &String) {}
