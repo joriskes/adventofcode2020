@@ -10,6 +10,7 @@ pub mod day05;
 pub mod day06;
 pub mod day07;
 pub mod day08;
+pub mod day09;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -48,6 +49,7 @@ fn main() {
         6 => day06::run(input_filename),
         7 => day07::run(input_filename),
         8 => day08::run(input_filename),
+        9 => day09::run(input_filename),
         _ => println!("Unkown day {}", day),
     }
 }
