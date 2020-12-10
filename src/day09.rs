@@ -1,12 +1,9 @@
-use crate::aoc_utils::read_input;
+use crate::aoc_utils::{input_into_numbers, read_input};
 
 pub fn run(input_filename: &str) {
     let input = read_input(input_filename);
 
-    let mut input_vec: Vec<u32> = vec![];
-    for line in input.lines() {
-        input_vec.push(line.parse::<u32>().unwrap_or(0));
-    }
+    let input_vec = input_into_numbers(input);
     part1and2(&input_vec);
 }
 

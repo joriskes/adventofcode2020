@@ -36,3 +36,11 @@ pub fn download_input(filename: &str, day: u32) {
     let mut file = File::create(filename).unwrap();
     file.write_all(body.as_bytes()).expect("write failed");
 }
+
+pub fn input_into_numbers(input: String) -> Vec<u32> {
+    let mut input_vec: Vec<u32> = vec![];
+    for line in input.lines() {
+        input_vec.push(line.parse::<u32>().unwrap_or(0));
+    }
+    return input_vec;
+}
