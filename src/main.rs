@@ -53,7 +53,7 @@ fn main() {
         8 => day08::run(input_filename),
         9 => day09::run(input_filename),
         10 => day10::run(input_filename),
-        11 => day10::run(input_filename),
+        11 => day11::run(input_filename),
         _ => println!("Unkown day {}", day),
     }
 }
