@@ -1,5 +1,7 @@
 use crate::aoc_utils::read_input;
 use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+use std::thread;
 use std::time::Instant;
 
 pub fn run(input_filename: &str) {
@@ -35,26 +37,10 @@ fn part1(input: &String) {
     )
 }
 
-fn part2(input: &String) {
-    let mut offsets: HashMap<u64, u64> = HashMap::new();
-    let mut lowest_offset: u64 = 9999;
-    let lines: Vec<&str> = input.lines().nth(1).unwrap().split(",").collect();
-    let mut index_offset = 0;
-    for line in lines {
-        if line != "x" {
-            let line_num = line.parse::<u64>().unwrap();
-            if line_num < lowest_offset {
-                lowest_offset = line_num;
-            }
-            offsets.insert(line_num, index_offset);
-        }
-        index_offset += 1;
-    }
-    let mut timestamp: u64 = lowest_offset;
-    let start = Instant::now();
+fn calc_timestamps(from: u64, to: u64, offsets: HashMap<u64, u64>, part2_mutex: Arc<Mutex<u64>>) {
+    let mut timestamp: u64 = from;
     loop {
         let mut ok_count = 0;
-
         for (line, index_offset) in offsets.iter() {
             let num = (timestamp + index_offset) / line;
             if line * num == timestamp + index_offset {
@@ -64,12 +50,69 @@ fn part2(input: &String) {
             }
         }
         if ok_count == offsets.len() {
+            // We found a result! Set it in the mutex
+            let mut result = part2_mutex.lock().unwrap();
+            // We're looking for the smallest result
+            if *result == 0 || timestamp < *result {
+                println!("Result! {} {}", timestamp, result);
+                *result = timestamp
+            }
             break;
         }
-        timestamp += lowest_offset;
-        if timestamp / lowest_offset % 100_000_000 == 0 {
-            println!("Timestamp {} ({:.2?})", timestamp, start.elapsed());
+        timestamp += 1;
+        if timestamp > to {
+            break;
         }
     }
-    println!("Part 2: {} ({:.2?})", timestamp, start.elapsed());
+}
+
+fn part2(input: &String) {
+    let start = Instant::now();
+    let mut offsets: HashMap<u64, u64> = HashMap::new();
+    let lines: Vec<&str> = input.lines().nth(1).unwrap().split(",").collect();
+    let mut index_offset = 0;
+    for line in lines {
+        if line != "x" {
+            let line_num = line.parse::<u64>().unwrap();
+            offsets.insert(line_num, index_offset);
+        }
+        index_offset += 1;
+    }
+
+    let part2: Arc<Mutex<u64>> = Arc::new(Mutex::new(0));
+    let mut thread_offsets = 0;
+    let thread_count = 30;
+    let thread_size = 100000000;
+    loop {
+        let mut handles = vec![];
+        println!(
+            "Calculating from {} ({:.2?})",
+            thread_size * thread_offsets,
+            start.elapsed()
+        );
+
+        for i in 0..thread_count {
+            let off = offsets.clone();
+            let part2_mut = Arc::clone(&part2);
+            let handle = thread::spawn(move || {
+                let from = thread_size * (i + thread_offsets);
+                let to = from + thread_size - 1;
+                calc_timestamps(from, to, off, part2_mut);
+            });
+            handles.push(handle);
+        }
+        // Wait on all threads to finish
+        for handle in handles {
+            handle.join().unwrap();
+        }
+        if *part2.lock().unwrap() > 0 {
+            break;
+        }
+        thread_offsets += thread_count;
+    }
+    println!(
+        "Part 2: {} ({:.2?})",
+        *part2.lock().unwrap(),
+        start.elapsed()
+    );
 }
