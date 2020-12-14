@@ -37,12 +37,18 @@ fn part1(input: &String) {
     )
 }
 
-fn calc_timestamps(from: u64, to: u64, offsets: HashMap<u64, u64>, part2_mutex: Arc<Mutex<u64>>) {
+fn calc_timestamps(
+    from: u64,
+    to: u64,
+    offsets: HashMap<u64, u64>,
+    step_size: u64,
+    part2_mutex: Arc<Mutex<u64>>,
+) {
     let mut timestamp: u64 = from;
     loop {
         let mut ok_count = 0;
         for (line, index_offset) in offsets.iter() {
-            let num = (timestamp + index_offset) / line;
+            let num = (timestamp + index_offset) / line; // number is floored we need ceil
             if line * num == timestamp + index_offset {
                 ok_count += 1;
             } else {
@@ -59,7 +65,7 @@ fn calc_timestamps(from: u64, to: u64, offsets: HashMap<u64, u64>, part2_mutex: 
             }
             break;
         }
-        timestamp += 1;
+        timestamp += step_size;
         if timestamp > to {
             break;
         }
@@ -69,12 +75,16 @@ fn calc_timestamps(from: u64, to: u64, offsets: HashMap<u64, u64>, part2_mutex: 
 fn part2(input: &String) {
     let start = Instant::now();
     let mut offsets: HashMap<u64, u64> = HashMap::new();
+    let mut step_num = 0;
     let lines: Vec<&str> = input.lines().nth(1).unwrap().split(",").collect();
     let mut index_offset = 0;
     for line in lines {
         if line != "x" {
             let line_num = line.parse::<u64>().unwrap();
             offsets.insert(line_num, index_offset);
+            if step_num == 0 {
+                step_num = line_num;
+            }
         }
         index_offset += 1;
     }
@@ -82,7 +92,7 @@ fn part2(input: &String) {
     let part2: Arc<Mutex<u64>> = Arc::new(Mutex::new(0));
     let mut thread_offsets = 0;
     let thread_count = 30;
-    let thread_size = 100000000;
+    let thread_size = step_num * 100000000;
     loop {
         let mut handles = vec![];
         println!(
@@ -97,7 +107,7 @@ fn part2(input: &String) {
             let handle = thread::spawn(move || {
                 let from = thread_size * (i + thread_offsets);
                 let to = from + thread_size - 1;
-                calc_timestamps(from, to, off, part2_mut);
+                calc_timestamps(from, to, off, step_num, part2_mut);
             });
             handles.push(handle);
         }
