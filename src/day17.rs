@@ -94,7 +94,7 @@ fn part1(input: &String) {
 
     for cycle in 0..6 {
         cubes = run_cycle(&mut cubes);
-        // println!("After cycle {}", cycle);
+        println!("After cycle {}", cycle);
         // print_cubes(&cubes);
     }
 
@@ -194,7 +194,7 @@ fn part2(input: &String) {
 
     for cycle in 0..6 {
         cubes = run_cycle_4d(&mut cubes);
-        // println!("After cycle {}", cycle);
+        println!("After cycle {}", cycle);
     }
 
     let mut enabled_count = 0;
