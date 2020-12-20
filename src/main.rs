@@ -19,6 +19,7 @@ pub mod day14;
 pub mod day15;
 pub mod day16;
 pub mod day17;
+pub mod day18;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -66,6 +67,7 @@ fn main() {
         15 => day15::run(input_filename),
         16 => day16::run(input_filename),
         17 => day17::run(input_filename),
+        18 => day18::run(input_filename),
         _ => println!("Unknown day {}", day),
     }
 }
